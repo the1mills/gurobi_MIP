@@ -11,14 +11,14 @@ import java.util.ArrayList;
 
 public class Mip1 {
 
-	private static Integer numOfPlayers = 8;
-	private static Integer numOfPositions = 5;
-	private static Integer numOfPeriods = 4;
+	private static Integer numOfPlayers = 12;
+	private static Integer numOfPositions = 8;
+	private static Integer numOfPeriods = 6;
 
 	private static Integer pMax = 3;
 	private static Integer pMin = 2;
 	private static Integer tMin = 2;
-	private static Integer tMax = 3;
+	private static Integer tMax = 4;
 
 	private static ArrayList<GRBVar> y_ij = new ArrayList<GRBVar>();
 	private static ArrayList<GRBVar> x_ijt = new ArrayList<GRBVar>();
@@ -115,10 +115,18 @@ public class Mip1 {
 		}
 	}
 
-	private static void addObjective(GRBModel model, String string) {
+	private static void addObjective(GRBModel model, String string)
+			throws GRBException {
 
-		// model.setObjective(expr, GRB.MAXIMIZE);
-
+		GRBLinExpr expr = new GRBLinExpr();
+		for (int i = 0; i < numOfPlayers; i++) {
+			for (int t = 0; t < numOfPeriods; t++) {
+				if (i % 2 == 0) {
+					expr.addTerm(2.0, model.getVarByName("z_" + i + "_" + t));
+				}
+			}
+		}
+		model.setObjective(expr, GRB.MINIMIZE);
 	}
 
 	private static void add5_0constraints(GRBModel model, String string)
